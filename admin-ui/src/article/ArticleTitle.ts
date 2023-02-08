@@ -1,7 +1,7 @@
 import { Article as TArticle } from "../api/article/Article";
 
-export const ARTICLE_TITLE_FIELD = "title";
+export const ARTICLE_TITLE_FIELD = "id";
 
-export const ArticleTitle = (record: TArticle) => {
-  return record.title;
+export const ArticleTitle = (record: TArticle): string => {
+  return record.id || String(record.id);
 };
