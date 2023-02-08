@@ -27,20 +27,21 @@ async function dropTables(
   tables: string[]
 ): Promise<void> {
   for (const table of tables) {
-    await prisma.$executeRaw(`DROP TABLE public."${table}" CASCADE;`);
+    await prisma.$executeRawUnsafe(`DROP TABLE public."${table}" CASCADE;`);
   }
 }
 
 async function dropTypes(prisma: PrismaClient, types: string[]) {
   for (const type of types) {
-    await prisma.$executeRaw(`DROP TYPE IF EXISTS "${type}" CASCADE;`);
+    await prisma.$executeRawUnsafe(`DROP TYPE IF EXISTS "${type}" CASCADE;`);
   }
 }
 
 async function getTables(prisma: PrismaClient): Promise<string[]> {
   const results: Array<{
     tablename: string;
-  }> = await prisma.$queryRaw`SELECT tablename from pg_tables where schemaname = 'public';`;
+  }> =
+    await prisma.$queryRaw`SELECT tablename from pg_tables where schemaname = 'public';`;
   return results.map((result) => result.tablename);
 }
 
@@ -48,10 +49,10 @@ async function getTypes(prisma: PrismaClient): Promise<string[]> {
   const results: Array<{
     typname: string;
   }> = await prisma.$queryRaw`
-SELECT t.typname
-FROM pg_type t 
-JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
-WHERE n.nspname = 'public';
-`;
+ SELECT t.typname
+ FROM pg_type t 
+ JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+ WHERE n.nspname = 'public';
+ `;
   return results.map((result) => result.typname);
 }

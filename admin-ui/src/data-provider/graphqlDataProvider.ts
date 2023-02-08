@@ -1,12 +1,13 @@
 import buildGraphQLProvider from "ra-data-graphql-amplication";
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { CREDENTIALS_LOCAL_STORAGE_ITEM } from "../auth-provider/ra-auth-basic-http";
+import { CREDENTIALS_LOCAL_STORAGE_ITEM } from "../constants";
 
 const httpLink = createHttpLink({
-  uri: "/graphql",
+  uri: `${process.env.REACT_APP_SERVER_URL}/graphql`,
 });
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_ITEM);
   return {
@@ -17,7 +18,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const apolloClient = new ApolloClient({
+export const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(httpLink),
 });
